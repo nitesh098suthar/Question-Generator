@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {
   Select,
@@ -20,11 +21,11 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
 
-  const [language, setLanguage] = useState("");
-  const [level, setLevel] = useState("");
-  const [difficulty, setDifficulty] = useState("");
-  const [type, setType] = useState("");
-  const [numQuestions, setNumQuestions] = useState<number | "">("");
+  const [language, setLanguage] = useState("English");
+  const [level, setLevel] = useState("First");
+  const [difficulty, setDifficulty] = useState("Easy");
+  const [type, setType] = useState("Short");
+  const [numQuestions, setNumQuestions] = useState<number | "">(10);
   const sendMessage = async () => {
     if (input.trim() === "") return;
 
@@ -80,7 +81,7 @@ export default function Chatbot() {
                   key={index}
                   className="border my-2 w-fit p-2 px-4 rounded-md"
                 >
-                  {msg.content}
+                  <ReactMarkdown>{msg.content}</ReactMarkdown>
                 </div>
               )}
             </div>
