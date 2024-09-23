@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import {
@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 interface Message {
   role: "user" | "bot";
   content: string;
@@ -20,12 +21,24 @@ interface Message {
 export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false); // New loading state
+  const messagesEndRef = useRef<HTMLDivElement | null>(null); // Reference for auto-scroll
 
   const [language, setLanguage] = useState("English");
   const [level, setLevel] = useState("First");
   const [difficulty, setDifficulty] = useState("Easy");
   const [type, setType] = useState("Short");
   const [numQuestions, setNumQuestions] = useState<number | "">(10);
+
+  // Function to scroll to the bottom
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom(); // Scroll to bottom when messages change
+  }, [messages]);
+
   const sendMessage = async () => {
     if (input.trim() === "") return;
 
@@ -37,6 +50,7 @@ export default function Chatbot() {
       },
     ];
     setMessages(newMessages);
+    setLoading(true); // Set loading to true when waiting for the response
 
     try {
       const response = await fetch("/api/chat", {
@@ -53,10 +67,13 @@ export default function Chatbot() {
         { role: "bot", content: data.response },
       ]);
     } catch (error) {
+      console.log("Error", error)
       setMessages((prevMessages) => [
         ...prevMessages,
         { role: "bot", content: "Error occurred." },
       ]);
+    } finally {
+      setLoading(false); // Set loading to false once response is received
     }
 
     setInput("");
@@ -68,24 +85,28 @@ export default function Chatbot() {
       <div className="p-4">
         <div className="mb-4 p-4 rounded-lg h-[75vh] overflow-y-scroll">
           {messages.map((msg, index) => (
-            <div>
+            <div key={index}>
               {msg.role === "user" ? (
-                <div
-                  key={index}
-                  className="bg-secondary w-fit p-2 px-4 rounded-md"
-                >
+                <div className="bg-secondary w-fit p-2 px-4 rounded-md">
                   {msg.content}
                 </div>
               ) : (
-                <div
-                  key={index}
-                  className="border my-2 w-fit p-2 px-4 rounded-md"
-                >
+                <div className="border my-2 w-fit p-2 px-4 rounded-md">
                   <ReactMarkdown>{msg.content}</ReactMarkdown>
                 </div>
               )}
             </div>
           ))}
+
+          {/* Show the loading animation when waiting for the bot response */}
+          {loading && (
+            <div className="w-fit my-2 p-2 px-4 rounded-md flex items-center">
+              <span className="dot-flashing"></span>
+            </div>
+          )}
+
+          {/* Invisible div to scroll to */}
+          <div ref={messagesEndRef} />
         </div>
       </div>
 
@@ -164,7 +185,7 @@ export default function Chatbot() {
             placeholder="Write your question here..."
           />
 
-          <Button variant={"outline"} onClick={sendMessage} className="w-">
+          <Button variant={"outline"} onClick={sendMessage}>
             <KeyboardArrowRightIcon />
           </Button>
         </div>

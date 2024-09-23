@@ -42,8 +42,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ response: generatedText });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Chatbot Error:', error);
-    return NextResponse.json({ error: 'Failed to get response from chatbot.', details: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to get response from chatbot.', details: (error as Error).message }, { status: 500 });
   }
 }
