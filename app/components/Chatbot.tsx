@@ -33,7 +33,7 @@ export default function Chatbot() {
       ...messages,
       {
         role: "user",
-        content: `Give me ${numQuestions} only question like = ${input} of type ${type} for class ${level} in ${language} and all the questions should be ${difficulty}`,
+        content: `Give me ${numQuestions} similar questions of = "${input}" of type ${type} for class ${level} in ${language} and all the questions should be ${difficulty}. Don't give me answer give me only questions!.`,
       },
     ];
     setMessages(newMessages);
@@ -66,7 +66,7 @@ export default function Chatbot() {
     <div className="relative min-h-screen bg-background">
       {/* Main content of your page */}
       <div className="p-4">
-        <div className="mb-4 p-4 rounded-lg h-[90vh] overflow-y-scroll">
+        <div className="mb-4 p-4 rounded-lg h-[75vh] overflow-y-scroll">
           {messages.map((msg, index) => (
             <div>
               {msg.role === "user" ? (
@@ -97,8 +97,8 @@ export default function Chatbot() {
               <SelectValue placeholder="Language" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Easy">Hindi</SelectItem>
-              <SelectItem value="Medium">English</SelectItem>
+              <SelectItem value="hindi">Hindi</SelectItem>
+              <SelectItem value="english">English</SelectItem>
             </SelectContent>
           </Select>
           <Select onValueChange={(value) => setLevel(value)}>
@@ -118,7 +118,7 @@ export default function Chatbot() {
               <SelectItem value="10th">Tenth</SelectItem>
               <SelectItem value="11th">Eleventh</SelectItem>
               <SelectItem value="12th">twelfth</SelectItem>
-              <SelectItem value="12th">Graduation</SelectItem>
+              <SelectItem value="Graduation">Graduation</SelectItem>
             </SelectContent>
           </Select>
           <Select onValueChange={(value) => setDifficulty(value)}>
@@ -144,13 +144,13 @@ export default function Chatbot() {
               <SelectValue placeholder="Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Easy">MCQ</SelectItem>
-              <SelectItem value="Medium">True-False</SelectItem>
-              <SelectItem value="Hard">One Line</SelectItem>
-              <SelectItem value="Hard">Short</SelectItem>
-              <SelectItem value="Hard">Medium</SelectItem>
-              <SelectItem value="Hard">Long</SelectItem>
-              <SelectItem value="Hard">Descriptive</SelectItem>
+              <SelectItem value="MCQ">MCQ</SelectItem>
+              <SelectItem value="true-false">True-False</SelectItem>
+              <SelectItem value="one line">One Line</SelectItem>
+              <SelectItem value="short">Short</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="long">Long</SelectItem>
+              <SelectItem value="descriptive">Descriptive</SelectItem>
             </SelectContent>
           </Select>
         </div>
